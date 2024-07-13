@@ -1,5 +1,9 @@
-const CppTurbo = require('./NativeCppTurbo').default;
+import NativeCppTurbo from './NativeCppTurbo';
 
-export function multiply(a: number, b: number): number {
-  return CppTurbo.multiply(a, b);
-}
+export const {
+  getOBject,
+  getNumbers,
+  callMeLater,
+  promiseNumber,
+  reverseString,
+} = NativeCppTurbo;
