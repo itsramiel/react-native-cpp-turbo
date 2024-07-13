@@ -5,36 +5,35 @@ namespace facebook::react {
 NativeCppTurboModule::NativeCppTurboModule(std::shared_ptr<CallInvoker> jsinvoker)
 : NativeCppTurboCxxSpec(std::move(jsinvoker)) {}
 
-jsi::String NativeCppTurboModule::reverseString(jsi::Runtime &rt, jsi::String str) {
-    std::string stdStr = str.utf8(rt);
-    std::reverse(stdStr.begin(), stdStr.end());
-    
-    return jsi::String::createFromUtf8(rt, stdStr);
+std::string NativeCppTurboModule::reverseString(jsi::Runtime &rt, std::string str) {
+    std::reverse(str.begin(), str.end());
+
+    return str;
 }
 
-jsi::Array NativeCppTurboModule::getNumbers(jsi::Runtime &rt) {
-    jsi::Array array = jsi::Array(rt, 10);
-    
+std::vector<int> NativeCppTurboModule::getNumbers(jsi::Runtime &rt) {
+    std::vector<int> array {};
+
     for (std::size_t i = 0; i < 10; ++i) {
-        array.setValueAtIndex(rt, i, jsi::Value(static_cast<int>(i)));
+        array.push_back(static_cast<int>(i));
     }
-    
+
     return array;
 }
 
-jsi::Object NativeCppTurboModule::getOBject(jsi::Runtime &rt) {
-    jsi::Object obj = jsi::Object(rt);
-    
-    obj.setProperty(rt, "result", jsi::String::createFromUtf8(rt, "success"));
-    
-    return obj;
+std::map<std::string, std::string> NativeCppTurboModule::getOBject(jsi::Runtime &rt) {
+    std::map<std::string, std::string> map{};
+
+map.insert(std::make_pair("result", "success"));
+
+    return map;
 }
 
 jsi::Value NativeCppTurboModule::promiseNumber(jsi::Runtime &rt, double number) {
-    
+
     jsi::Function promiseConstructor = rt.global().getPropertyAsFunction(rt, "Promise");
-    
-    
+
+
     return promiseConstructor.callAsConstructor(rt,
                                                 jsi::Function::createFromHostFunction(
                                                                                       rt,
@@ -51,14 +50,14 @@ jsi::Value NativeCppTurboModule::promiseNumber(jsi::Runtime &rt, double number) 
                                                                                                    return jsi::Value::undefined();
                                                                                                }
                                                                                       )
-                                                
+
                                                 );
 
 }
 
 void NativeCppTurboModule::callMeLater(jsi::Runtime &rt, jsi::Function successCB, jsi::Function failureCB) {
     bool callSuccess = std::rand() % 2;
-    
+
     if(callSuccess) {
         successCB.call(rt);
     } else {
